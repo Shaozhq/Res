@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{055C410D-F037-43F3-89FF-6A0D1F497781}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ResourceCore</RootNamespace>
+    <AssemblyName>ResourceCore</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Genersoft.Platform.AppFramework.Service">
+      <HintPath>..\ResourceManager\refDll\Genersoft.Platform.AppFramework.Service.dll</HintPath>
+    </Reference>
+    <Reference Include="Genersoft.Platform.AppFramework.SPI">
+      <HintPath>..\ResourceManager\refDll\Genersoft.Platform.AppFramework.SPI.dll</HintPath>
+    </Reference>
+    <Reference Include="Genersoft.Platform.ChangeLog.Api">
+      <HintPath>..\ResourceManager\refDll\Genersoft.Platform.ChangeLog.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="Genersoft.Platform.ChangeLog.Manager">
+      <HintPath>..\ResourceManager\refDll\Genersoft.Platform.ChangeLog.Manager.dll</HintPath>
+    </Reference>
+    <Reference Include="Genersoft.Platform.ChangeLog.Service">
+      <HintPath>..\ResourceManager\refDll\Genersoft.Platform.ChangeLog.Service.dll</HintPath>
+    </Reference>
+    <Reference Include="Genersoft.Platform.Core.Common">
+      <HintPath>..\ResourceManager\refDll\Genersoft.Platform.Core.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Genersoft.Platform.Core.DataAccess">
+      <HintPath>..\ResourceManager\refDll\Genersoft.Platform.Core.DataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="Genersoft.Platform.PubQuery.SPI">
+      <HintPath>..\ResourceManager\refDll\Genersoft.Platform.PubQuery.SPI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HtChangeLogQueryFromMenu.cs" />
+    <Compile Include="HtskQuery.cs" />
+    <Compile Include="ResChangeLog.cs" />
+    <Compile Include="ResChangeLogQueryFromMenu.cs" />
+    <Compile Include="ResHtChangeLog.cs" />
+    <Compile Include="ResHtQuery.cs" />
+    <Compile Include="ResLzQuery.cs" />
+    <Compile Include="ResMxQuery.cs" />
+    <Compile Include="ResCountQuery.cs" />
+    <Compile Include="ResHtRelation.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RescourceApi\RescourceApi.csproj">
+      <Project>{9e9cb1b5-6234-483a-bd1e-2bef6d9f1b00}</Project>
+      <Name>RescourceApi</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
