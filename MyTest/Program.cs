@@ -5,6 +5,9 @@ using System.Text;
 
 namespace MyTest
 {
+    /// <summary>
+    /// 自测
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
