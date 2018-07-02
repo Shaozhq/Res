@@ -21,19 +21,19 @@ namespace ResourceCore
         /// <summary>
         /// 资源类别编号
         /// </summary>
-        private readonly string reslbbn = "reslbbh";
+        private readonly string reslbbn = "zylbbh";
         /// <summary>
         /// 资源编号
         /// </summary>
-        private readonly string resbh = "resbh";
+        private readonly string resbh = "zybh";
         /// <summary>
         /// 资源使用状况
         /// </summary>
-        private readonly string ressyzk = "ressyzk";
+        private readonly string ressyzk = "zysyzkbh";
         /// <summary>
         /// 合同类别
         /// </summary>
-        private readonly string HTLBMC = "HTLBMC";
+        private readonly string HTLBMC = "HTLBbh";
         /// <summary>
         /// 合同编号
         /// </summary>
@@ -70,20 +70,35 @@ namespace ResourceCore
 
         private string GetResFilter(IQueryServerContext context)
         {
-
-            var list = new List<string>();
+            var resFilterList = new List<string>();
+            #region 关于资源的,单独查资源的表获取ID
+            //资源类别编号
             if (!string.IsNullOrEmpty(context[reslbbn]))
             {
-                list.Add($"reslbbh='{context[reslbbn]}'");
+                resFilterList.Add($"reslbbh='{context[reslbbn]}'");
             }
-
+            //资源编号
             if (!string.IsNullOrEmpty(context[resbh]))
             {
-                list.Add($"reszybh = '{context[resbh]}'");
+                resFilterList.Add($"reszybh = '{context[resbh]}'");
             }
+            //资源使用状况
             if (!string.IsNullOrEmpty(context[ressyzk]))
             {
-                list.Add($"ResSyzkId = '{context[ressyzk]}'");
+                resFilterList.Add($"ResSyzkId = '{context[ressyzk]}'");
+            }
+            var resFilter = string.Empty;
+            if (resFilterList.Count != 0)
+            {
+                var resPart = string.Join(" and ", resFilterList);
+                resFilter = $"select resnm from fqres where {resPart}";
+            }
+            #endregion
+            var list = new List<string>();
+            //资源的过滤
+            if (!string.IsNullOrEmpty(resFilter))
+            {
+                list.Add($"resnm in({resFilter}) ");
             }
             if (!string.IsNullOrEmpty(context[HTLBMC]))
             {
