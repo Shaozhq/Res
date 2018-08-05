@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -24,6 +25,9 @@ namespace MyTest
             //qqq.Add("456");
             //qqq.Add("789");
             Console.WriteLine(string.Join(" AND ",qqq));
+            DataTable dt = new DataTable();
+
+
 
 
         }
