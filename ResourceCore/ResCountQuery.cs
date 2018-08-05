@@ -100,12 +100,11 @@ namespace ResourceCore
 
         private void GetNotDetailCount(DataSet ds,int layer)
         {
-            //首先根据级次得到本级次以及上级的分级码
             if (DataSetValidator.IsDatasetValid(ds) == false)
             {
                 return;
             }
-
+            //首先根据级次得到本级次以及上级的分级码
             var resTypeDeepSql = "select  max(len(path))/4 from Zylb";
             var resTypeDeep = Utility.CurDatabase.ExecuteScalar(resTypeDeepSql).ToString();
             var resTypeLayer = Convert.ToInt32(resTypeDeep);
@@ -135,7 +134,6 @@ namespace ResourceCore
 
         private string GetResFilter(IQueryServerContext context)
         {
-            //不能这么干，所有类别的可能不行
             var list = new List<string>();
             //如果资源类别编号有筛选条件，查询所有类别的合同,查询条件变化后是不是需要调整
             //if (!string.IsNullOrEmpty(context[reslbbh]))
