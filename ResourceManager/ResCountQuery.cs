@@ -61,6 +61,12 @@ namespace ResourceManager
         {
             //todo 根据资源类别获取最大级数替换成明细,默认是3级
             int maxLayer = 3;
+            var resLbMaxLayer = ResourceRestFul.GetClient().GetMaxResLbLayer();
+            if (!string.IsNullOrEmpty(resLbMaxLayer))
+            {
+                maxLayer = Convert.ToInt32(resLbMaxLayer);
+            }
+            //先清空
             ResLbLayer.VisualComponent.DataSource = null;
             for (int i = 1; i < maxLayer; i++)
             {

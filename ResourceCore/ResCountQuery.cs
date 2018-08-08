@@ -81,19 +81,22 @@ namespace ResourceCore
             fqres.resstatename
                 from
             Zylb
-                left join fqres on fares.ResTypeId = Zylb.Zylbnm";
-            var orderByPart = " order by Zylb.Path";
-            var wherePart = GetResFilter(context);
-            if (!string.IsNullOrEmpty(wherePart))
+                left join fqres on fqres.ResTypeId = Zylb.Zylbnm";
+            
+            var joinPart = GetResFilter(context);
+            
+            if (!string.IsNullOrEmpty(joinPart))
             {
-                resCountSql = String.Concat(resCountSql, " where ", wherePart);
+                resCountSql = String.Concat(resCountSql, " and ", joinPart);
             }
-
+            var orderByPart = " order by Zylb.Path";
             //根据资源编号排序汇总，前台默认是类别必须必填
             resCountSql = string.Concat(resCountSql, orderByPart);
             var result = Utility.CurDatabase.ExecuteDataSet(resCountSql);
             //统计结果
-            GetNotDetailCount(result,0);
+            //获取查询级数
+            int resLbQueryLayer = Convert.ToInt32(context["reslblayer"]);
+            GetNotDetailCount(result, resLbQueryLayer);
             return result;
         }
 
@@ -118,13 +121,15 @@ namespace ResourceCore
                 {
                     var curPath = pathRow["path"].ToString();
                     var curPathSubRows = ds.Tables[0].Select($"path like '{curPath}%'");
-                    double countNum = 0;
+                    decimal countNum = 0;
                     foreach (DataRow eachRow in curPathSubRows)
                     {
-                        countNum += double.Parse(eachRow[sumField].ToString());
+                        if (eachRow[sumField] == DBNull.Value)
+                            continue;
+                        countNum += Convert.ToDecimal(eachRow[sumField]);
                     }
                     //合计当前层级的下级数量和面积之和
-                    pathRow[sumField] = countNum;
+                    pathRow[sumField] = countNum.ToString();
                 }
 
             }
@@ -156,8 +161,10 @@ namespace ResourceCore
             if (!string.IsNullOrEmpty(context[resdwbh]))
             {
                 var selectDwbh = context[resdwbh].ToString();
-                //找到单位的所有下级
-                var hsdwSql = $"select lsbzdw_dwbh from LSBZDW where lsbzdw_dwnm like '{selectDwbh}%'";
+                var selectDwnmSql = $"select lsbzdw_dwnm from lsbzdw where lsbzdw_dwbh='{selectDwbh}'";
+                var selectDwnm = Utility.CurDatabase.ExecuteScalar(selectDwnmSql).ToString();
+                //找到核算单位的所有下级
+                var hsdwSql = $"select lsbzdw_dwbh from LSBZDW where lsbzdw_dwnm like '{selectDwnm}%'";
                 list.Add($"fqres.ResSsdwId in ({hsdwSql})");
             }
             //注意日期的处理

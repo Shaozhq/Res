@@ -31,6 +31,16 @@ namespace ResourceManager
         }
 
         /// <summary>
+        /// 获取资源类别最大级数
+        /// </summary>
+        /// <returns></returns>
+        internal string GetMaxResLbLayer()
+        {
+            string[] parameters = new string[0];
+            var result = RESTFulService.Invoke(CurState, assembly, className, "GetMaxResLbLayer", true, parameters);
+            return result;
+        }
+        /// <summary>
         /// 资源编号是否有合同信息
         /// </summary>
         /// <param name="resCode"></param>

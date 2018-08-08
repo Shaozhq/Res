@@ -20,7 +20,18 @@ namespace ResourceCore
 
         }
 
-       
+
+        /// <summary>
+        /// 获取资源类别分级级数
+        /// </summary>
+        /// <returns></returns>
+        public string GetMaxResLbLayer()
+        {
+            //查询资源类别分级级数
+            var resTypeDeepSql = "select  max(len(path))/4 from Zylb";
+            var resTypeDeep = Utility.CurDatabase.ExecuteScalar(resTypeDeepSql).ToString();
+            return resTypeDeep;
+        }
         /// <summary>
         /// 检查当前资源编号是否有对应的合同信息（正常状态下的合同）
         /// </summary>
