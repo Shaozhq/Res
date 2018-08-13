@@ -82,15 +82,15 @@ namespace ResourceCore
             fqres.resstatename
                 from
             Zylb
-                left join fqres on fqres.ResTypeId = Zylb.Zylbnm
-                left join lsbzdw on fqres.resssdwid = lsbzdw.lsbzdw_dwbh";
+                left join fqres on fqres.ResTypeId = Zylb.Zylbnm";
             
             var joinPart = GetResFilter(context);
-            
+
             if (!string.IsNullOrEmpty(joinPart))
             {
                 resCountSql = String.Concat(resCountSql, " and ", joinPart);
             }
+            resCountSql = String.Concat(resCountSql, " left join lsbzdw on fqres.resssdwid = lsbzdw.lsbzdw_dwbh ");
             var orderByPart = " order by Zylb.Path";
             //根据资源编号排序汇总，前台默认是类别必须必填
             resCountSql = string.Concat(resCountSql, orderByPart);
@@ -186,6 +186,8 @@ namespace ResourceCore
                 //找到核算单位的所有下级
                 var hsdwSql = $"select lsbzdw_dwbh from LSBZDW where lsbzdw_dwnm like '{selectDwnm}%'";
                 list.Add($"fqres.ResSsdwId in ({hsdwSql})");
+
+
             }
             //注意日期的处理
             if (!string.IsNullOrEmpty(context[tzrq]))
