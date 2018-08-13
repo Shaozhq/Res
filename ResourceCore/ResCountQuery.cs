@@ -62,6 +62,7 @@ namespace ResourceCore
             context.AddMacroVal("hsdwmc", hsdwmc);
             //资源类别和资源表联查
             var resCountSql = @"SELECT
+            lsbzdw.lsbzdw_dwmc hsdwmc,
             Zylb.path,
             Zylb.Zylbbh,
             Zylb.Zylbmc,
@@ -81,7 +82,8 @@ namespace ResourceCore
             fqres.resstatename
                 from
             Zylb
-                left join fqres on fqres.ResTypeId = Zylb.Zylbnm";
+                left join fqres on fqres.ResTypeId = Zylb.Zylbnm
+                left join lsbzdw on fqres.resssdwid = lsbzdw.lsbzdw_dwbh";
             
             var joinPart = GetResFilter(context);
             
@@ -96,6 +98,7 @@ namespace ResourceCore
             //统计结果
             //获取查询级数
             int resLbQueryLayer = Convert.ToInt32(context["reslblayer"]);
+            //int resLbQueryLayer = 4;
             GetNotDetailCount(result, resLbQueryLayer);
             return result;
         }
@@ -120,8 +123,18 @@ namespace ResourceCore
                 foreach (var pathRow in rowsEachLayer)
                 {
                     var curPath = pathRow["path"].ToString();
-                    var curPathSubRows = ds.Tables[0].Select($"path like '{curPath}%'");
+                    var curPathSubRows = ds.Tables[0].Select($"path like '{curPath}%' and path<>'{curPath}'");
+                    //最末级节点要清楚
+                    if (curPathSubRows == null || curPathSubRows.Length == 0)
+                        continue;
                     decimal countNum = 0;
+                    //当前行的数据要同步
+                    if (pathRow[sumField] == DBNull.Value)
+                        countNum = 0;
+                    else
+                    {
+                        countNum= Convert.ToDecimal(pathRow[sumField]);
+                    }
                     foreach (DataRow eachRow in curPathSubRows)
                     {
                         if (eachRow[sumField] == DBNull.Value)
@@ -133,7 +146,14 @@ namespace ResourceCore
                 }
 
             }
-            //todo 根据条件删除resTypeLayery以及layer删除不需要明细组织
+
+            if (layer == resTypeLayer)
+                return;
+            var deleteRows = ds.Tables[0].Select($"layer>{layer}");
+            foreach (var item in deleteRows)
+            {
+                ds.Tables[0].Rows.Remove(item);
+            }
         }
 
 
