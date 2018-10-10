@@ -335,6 +335,8 @@ namespace ResourceManager
             return this.CompContext.DefaultInstanceData.DataSet.Tables[0].Rows[0];
         }
 
+
+
         /// <summary>
         /// 当前行数据状态
         /// </summary>
@@ -398,6 +400,20 @@ namespace ResourceManager
         public void UpdateResAndHtStateByEndTime()
         {
             ResourceRestFul.GetClient().UpdateResAndHtStateByEndTime();
+        }
+
+        /// <summary>
+        /// 保存前更新资源编号和卡片编号的值,
+        /// </summary>
+        [ControllerMethod]
+        public void BeforeSave()
+        {
+            var curReslbbh = GetRightCardDataTable()[ResLbbh].ToString();
+            var code = ResourceRestFul.GetClient().GetMaxResCode(curReslbbh,true);
+            GetRightCardDataTable()[ResKpbh] = code;
+            GetRightCardDataTable()[ResZybh] = code;
+            GetCurRow()[ResKpbh] = code;
+            GetCurRow()[ResZybh] = code;
         }
 
         /// <summary>
@@ -572,7 +588,6 @@ namespace ResourceManager
         {
             //把变更菜单打开
             this.BarBtnChange.VisualComponent.Enabled = true;
-
         }
 
         /// <summary>
@@ -701,27 +716,7 @@ namespace ResourceManager
         {
             //var curTimeStr = DateTime.Now.ToString("yyyyMMddHHmm");
             //TODO 找当前资源类别开头的末尾五位数的最大值+1
-            var curMaxCode = ResourceRestFul.GetClient().GetMaxResCode(typeCode);
-            var num = string.Empty;
-            //默认为5位长度流水号
-            if (string.IsNullOrEmpty(curMaxCode))
-            {
-                num = "00001";
-            }
-            else
-            {
-                var maxLength = 5;
-
-                var lastNum = curMaxCode.Remove(0, typeCode.Length);
-                if (string.IsNullOrEmpty(lastNum))
-                    lastNum = "00000";
-                var nextNum = Convert.ToInt32(lastNum) + 1;
-                num = nextNum.ToString().PadLeft(maxLength, '0');
-
-            }
-            
-            var result = typeCode + num;
-            return result;
+             return ResourceRestFul.GetClient().GetMaxResCode(typeCode,false);
         }
 
         /// <summary>

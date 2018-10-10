@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using Genersoft.Platform.AppFramework.ClientService;
 using Genersoft.Platform.AppFramework.Service;
+using Genersoft.Platform.Core.Common;
 
 namespace ResourceManager
 {
@@ -52,15 +53,18 @@ namespace ResourceManager
             var result = RESTFulService.Invoke(CurState, assembly, className, "GetHtByRescourceCode", true, parameters);
             return result;
         }
+
         /// <summary>
         /// 获取当前资源类别最大的资源编号
         /// </summary>
         /// <param name="resTypeCode"></param>
+        /// <param name="isSeelp"></param>
         /// <returns></returns>
-        internal string GetMaxResCode(string resTypeCode)
+        internal string GetMaxResCode(string resTypeCode, bool isSeelp)
         {
-            string[] parameters = new string[1];
+            string[] parameters = new string[2];
             parameters[0] = resTypeCode;
+            parameters[1] = Serializer.Serialize(isSeelp);
             var result = RESTFulService.Invoke(CurState, assembly, className, "GetMaxResCode", true, parameters);
             return result;
         }

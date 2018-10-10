@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Genersoft.Platform.AppFramework.Service;
 using Genersoft.Platform.Core.Common;
 using Genersoft.Platform.Core.DataAccess;
@@ -16,6 +17,7 @@ namespace ResourceCore
     /// </summary>
     public class ResHtRelation
     {
+        private static object locker = new object();
         public ResHtRelation() {
 
         }
@@ -49,12 +51,40 @@ namespace ResourceCore
         /// 获取当前资源类别最大的资源编号
         /// </summary>
         /// <param name="curTypeCode"></param>
+        /// <param name="isSleep"></param>
         /// <returns></returns>
-        public string GetMaxResCode(string curTypeCode)
+        public string GetMaxResCode(string curTypeCode,string isSleep)
         {
-            var sql = $"select max(reszybh) from fqres where ResLbbh={{0}} and reszybh like '{curTypeCode}%'";
-            var maxValue = Utility.CurDatabase.ExecuteScalar(sql, curTypeCode);
-            return maxValue as string;
+            lock (locker)
+            {
+                var sleepFlag = Serializer.Deserialize<bool>(isSleep);
+                if (sleepFlag)
+                {
+                    Thread.Sleep(280);
+                }
+                var sql = $"select max(reszybh) from fqres where ResLbbh={{0}} and reszybh like '{curTypeCode}%'";
+                var maxValue = Utility.CurDatabase.ExecuteScalar(sql, curTypeCode).ToString();
+                var num = string.Empty;
+                //默认为5位长度流水号
+                if (string.IsNullOrEmpty(maxValue))
+                {
+                    num = "00001";
+                }
+                else
+                {
+                    var maxLength = 5;
+
+                    var lastNum = maxValue.Remove(0, curTypeCode.Length);
+                    if (string.IsNullOrEmpty(lastNum))
+                        lastNum = "00000";
+                    var nextNum = Convert.ToInt32(lastNum) + 1;
+                    num = nextNum.ToString().PadLeft(maxLength, '0');
+
+                }
+
+                var result = curTypeCode + num;
+                return result;
+            }
         }
         /// <summary>
         /// 更新资源状态
