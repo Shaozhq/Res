@@ -95,6 +95,10 @@ namespace ResourceManager
         /// 所属部门Id
         /// </summary>
         private readonly string ResSsbmId = "ResSsbmId";
+        /// <summary>
+        /// 所属核算单位编号
+        /// </summary>
+        private readonly string ResSsdwId = "ResSsdwId";
 
         #region 控件ID
         /// <summary>
@@ -308,12 +312,17 @@ namespace ResourceManager
 
         #endregion
         /// <summary>
+        /// 核算单位编号
+        /// </summary>
+        private readonly string curHsdwbh;
+        /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="context"></param>
         public ResourceMgrCard(IFormActionContext context) : base(context)
         {
-            this.curState = context.ElementHandler.ADPUIState;
+            curState = context.ElementHandler.ADPUIState;
+            curHsdwbh = curState["gsHsdw"];
         }
 
 
@@ -409,7 +418,7 @@ namespace ResourceManager
         public void BeforeSave()
         {
             var curReslbbh = GetRightCardDataTable()[ResLbbh].ToString();
-            var code = ResourceRestFul.GetClient().GetMaxResCode(curReslbbh,true);
+            var code = ResourceRestFul.GetClient().GetMaxResCode(curReslbbh, curHsdwbh, true);
             GetRightCardDataTable()[ResKpbh] = code;
             GetRightCardDataTable()[ResZybh] = code;
             GetCurRow()[ResKpbh] = code;
@@ -714,9 +723,7 @@ namespace ResourceManager
         /// <returns></returns>
         private string GetResCodeByType(string typeCode)
         {
-            //var curTimeStr = DateTime.Now.ToString("yyyyMMddHHmm");
-            //TODO 找当前资源类别开头的末尾五位数的最大值+1
-             return ResourceRestFul.GetClient().GetMaxResCode(typeCode,false);
+            return ResourceRestFul.GetClient().GetMaxResCode(typeCode, curHsdwbh, false);
         }
 
         /// <summary>
@@ -776,12 +783,15 @@ namespace ResourceManager
             var resCode = GetResCodeByType(code);
             //给列表模型赋值
             GetCurRow()[ResZybh] = resCode;
+            GetCurRow()[ResKpbh] = resCode;
             GetCurRow()[ResLbmc] = name;
+            GetCurRow()[ResLbbh] = code;
 
             //给卡片赋值
             GetRightCardDataTable()[ResZybh] = resCode;
             GetRightCardDataTable()[ResKpbh] = resCode;
             GetRightCardDataTable()[ResLbmc] = name;
+            GetRightCardDataTable()[ResLbbh] = code;
 
         }
         /// <summary>

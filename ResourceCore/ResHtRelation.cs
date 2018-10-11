@@ -51,9 +51,10 @@ namespace ResourceCore
         /// 获取当前资源类别最大的资源编号
         /// </summary>
         /// <param name="curTypeCode"></param>
+        /// <param name="hsdwbh"></param>
         /// <param name="isSleep"></param>
         /// <returns></returns>
-        public string GetMaxResCode(string curTypeCode,string isSleep)
+        public string GetMaxResCode(string curTypeCode,string hsdwbh,string isSleep)
         {
             lock (locker)
             {
@@ -62,8 +63,8 @@ namespace ResourceCore
                 {
                     Thread.Sleep(280);
                 }
-                var sql = $"select max(reszybh) from fqres where ResLbbh={{0}} and reszybh like '{curTypeCode}%'";
-                var maxValue = Utility.CurDatabase.ExecuteScalar(sql, curTypeCode).ToString();
+                var sql = $"select max(reszybh) from fqres where ResLbbh={{0}} and resssdwid={{1}} and reszybh like '{curTypeCode}%'";
+                var maxValue = Utility.CurDatabase.ExecuteScalar(sql, curTypeCode,hsdwbh).ToString();
                 var num = string.Empty;
                 //默认为5位长度流水号
                 if (string.IsNullOrEmpty(maxValue))

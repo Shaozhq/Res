@@ -58,13 +58,15 @@ namespace ResourceManager
         /// 获取当前资源类别最大的资源编号
         /// </summary>
         /// <param name="resTypeCode"></param>
+        /// <param name="hsdwbh"></param>
         /// <param name="isSeelp"></param>
         /// <returns></returns>
-        internal string GetMaxResCode(string resTypeCode, bool isSeelp)
+        internal string GetMaxResCode(string resTypeCode, string hsdwbh,bool isSeelp)
         {
-            string[] parameters = new string[2];
+            string[] parameters = new string[3];
             parameters[0] = resTypeCode;
-            parameters[1] = Serializer.Serialize(isSeelp);
+            parameters[1] = hsdwbh;
+            parameters[2] = Serializer.Serialize(isSeelp);
             var result = RESTFulService.Invoke(CurState, assembly, className, "GetMaxResCode", true, parameters);
             return result;
         }
